@@ -3,13 +3,14 @@ import {
   Share2, Plus, Check, Trash2, Copy, Users, LogOut, MessageCircle, 
   Link, RefreshCw, X, ChevronDown, ChevronUp, ShoppingCart, 
   ListChecks, History, Globe, Heart, AlertCircle, ArrowRight, Search, Mic, MicOff,
-  Volume1, Volume2, Settings
+  Volume1, Volume2, Settings, Star
 } from "lucide-react";
 import { useApp } from "../hooks/AppContext";
 import { defaultCategories, getDefaultUnit, translateItemName, parseHinglishUnit } from "../lib/defaultData";
 import { Card } from "./ui/Card";
 import { Button } from "./ui/Button";
 import { BottomSheet } from "./ui/BottomSheet";
+import { FrequentTab } from "./FrequentTab";
 import * as LucideIcons from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -976,6 +977,12 @@ export const SimpleShoppingDashboard = () => {
           </div>
         )}
 
+        {activeView === "frequent" && (
+          <div className="flex flex-col gap-5">
+            <FrequentTab />
+          </div>
+        )}
+
         {activeView === "history" && (
           <div className="flex flex-col gap-5">
             <h2 className="text-lg font-black text-slate-100 px-1">
@@ -1419,6 +1426,16 @@ export const SimpleShoppingDashboard = () => {
               {checkedItems.length}
             </span>
           )}
+        </button>
+
+        <button
+          onClick={() => setActiveView("frequent")}
+          className={`flex flex-col items-center gap-1.5 cursor-pointer text-xs font-black select-none border-none bg-transparent ${
+            activeView === "frequent" ? "text-amber-400" : "text-slate-400 hover:text-slate-200"
+          }`}
+        >
+          <Star className={`h-5 w-5 ${ activeView === "frequent" ? "fill-amber-400" : ""}`} />
+          <span>Frequent</span>
         </button>
 
         <button
