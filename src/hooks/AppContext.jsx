@@ -432,6 +432,52 @@ export const AppProvider = ({ children }) => {
     }
   }, [familyCode, categories]);
 
+  const fetchRecentItemDetails = useCallback(async (itemName) => {
+    if (!familyCode) return null;
+    try {
+      const res = await fetch(`/api/items/recent?familyCode=${familyCode}&name=${encodeURIComponent(itemName)}`);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.error("Fetch recent item error:", err);
+    }
+    return null;
+  }, [familyCode]);
+
+  const saveTemplate = useCallback(async (templateName) => {
+    if (!familyCode || !activeListId) return;
+    try {
+      const res = await fetch("/api/lists/template", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ familyCode, sourceListId: activeListId, templateName })
+      });
+      if (res.ok) {
+        setSnackbar("Template saved successfully");
+      }
+    } catch (err) {
+      console.error("Save template error:", err);
+    }
+  }, [familyCode, activeListId]);
+
+  const applyTemplate = useCallback(async (templateId) => {
+    if (!familyCode || !activeListId) return;
+    try {
+      const res = await fetch("/api/lists/apply-template", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ familyCode, templateId, targetListId: activeListId })
+      });
+      if (res.ok) {
+        await fetchItems(activeListId);
+        setSnackbar("Template applied");
+      }
+    } catch (err) {
+      console.error("Apply template error:", err);
+    }
+  }, [familyCode, activeListId, fetchItems]);
+
   return (
     <AppContext.Provider
       value={{
@@ -480,7 +526,11 @@ export const AppProvider = ({ children }) => {
         addItem,
         updateItem,
         deleteItem,
-        toggleFavorite
+        toggleFavorite,
+        
+        fetchRecentItemDetails,
+        saveTemplate,
+        applyTemplate
       }}
     >
       {children}

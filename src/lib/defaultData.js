@@ -294,3 +294,41 @@ export function parseHinglishUnit(word) {
   return matchedKey ? hinglishUnitMappings[matchedKey] : null;
 }
 
+// Auto-detect category based on item name and predefined keywords
+export function autoDetectCategory(itemName, categoriesList) {
+  const normalized = itemName.toLowerCase().trim();
+  
+  // 1. Check exact predefined items first
+  for (const cat of defaultCategories) {
+    for (const item of cat.predefinedItems) {
+      if (item.name.toLowerCase().trim() === normalized) {
+        // Find corresponding category in actual DB categories (by name)
+        const dbCat = categoriesList.find(c => c.name === cat.name);
+        if (dbCat) return dbCat._id;
+      }
+    }
+  }
+
+  // 2. Keyword based guessing
+  const categoryKeywords = {
+    "Vegetables": ["tomato", "potato", "onion", "garlic", "ginger", "chilli", "cabbage", "spinach", "pea", "lady finger", "brinjal", "carrot", "radish", "tamatar", "aloo", "pyaz", "adrak", "mirch", "gobhi", "palak", "bhindi", "baingan", "matar"],
+    "Fruits": ["apple", "banana", "orange", "mango", "papaya", "grape", "watermelon", "pomegranate", "seb", "kela", "santra", "aam", "papita", "angoor", "tarbooz", "anaar", "guava", "amrood"],
+    "Dairy": ["milk", "curd", "paneer", "butter", "cheese", "ghee", "doodh", "dahi", "makkhan", "yogurt"],
+    "Grocery": ["flour", "rice", "dal", "sugar", "salt", "oil", "tea", "coffee", "besan", "poha", "suji", "aata", "chawal", "cheeni", "namak", "tel", "chai", "maida", "wheat"],
+    "Spices": ["powder", "seed", "masala", "turmeric", "chilli", "coriander", "cumin", "mustard", "haldi", "mirch", "dhaniya", "jeera", "rai", "cardamom", "elaichi", "clove", "laung"],
+    "Cleaning": ["soap", "detergent", "cleaner", "wash", "surf", "vim", "harpic", "lizol", "shampoo", "brush"],
+    "Snacks": ["biscuit", "chip", "namkeen", "chocolate", "maggi", "noodle", "pasta", "cookie", "cake"],
+    "Beverages": ["drink", "juice", "soda", "water", "coke", "pepsi", "sprite", "limca", "maaza", "frooti"],
+    "Medicines": ["vitamin", "paracetamol", "syrup", "band", "tablet", "pill", "medicine", "dawai", "crocin"]
+  };
+
+  for (const [catName, keywords] of Object.entries(categoryKeywords)) {
+    if (keywords.some(kw => normalized.includes(kw))) {
+      const dbCat = categoriesList.find(c => c.name === catName);
+      if (dbCat) return dbCat._id;
+    }
+  }
+
+  // Default to null if no match, allowing fallback logic elsewhere
+  return null;
+}

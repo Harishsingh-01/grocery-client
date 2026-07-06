@@ -3,7 +3,7 @@ import { useApp } from "../../hooks/AppContext";
 import { BottomSheet } from "../../components/ui/BottomSheet";
 import { Button } from "../../components/ui/Button";
 import { Heart, Trash2, Mic, Play, Square, Volume2 } from "lucide-react";
-import { defaultUnits, getDefaultUnit } from "../../lib/defaultData";
+import { defaultUnits, getDefaultUnit, autoDetectCategory } from "../../lib/defaultData";
 
 export const ItemEditorSheet = () => {
   const {
@@ -16,7 +16,8 @@ export const ItemEditorSheet = () => {
     deleteItem,
     categories,
     toggleFavorite,
-    favorites
+    favorites,
+    fetchRecentItemDetails
   } = useApp();
 
   const [name, setName] = useState("");
@@ -41,7 +42,6 @@ export const ItemEditorSheet = () => {
   useEffect(() => {
     if (selectedItem) {
       setName(selectedItem.name || "");
-      setQuantity(selectedItem.quantity || 1);
       setNotes(selectedItem.notes || "");
       setSubcategory(selectedItem.subcategory || "");
       
@@ -56,20 +56,42 @@ export const ItemEditorSheet = () => {
 
       if (selectedItem._id) {
         // Editing existing item
+        setQuantity(selectedItem.quantity || 1);
         setUnit(selectedItem.unit || "piece");
+        setEstimatedCost(selectedItem.estimatedCost || 0);
       } else {
-        // Adding a new item, resolve default unit
-        const defaultUnit = getDefaultUnit(selectedItem.name || "");
+        // Adding a new item - use smart memory and auto category if not provided
+        const itemName = selectedItem.name || "";
+        
+        if (!resolvedCategoryId) {
+          const autoCat = autoDetectCategory(itemName, categories);
+          if (autoCat) setCategoryId(autoCat);
+        }
+
+        const defaultUnit = getDefaultUnit(itemName);
+        setQuantity(selectedItem.quantity || 1);
         setUnit(defaultUnit);
+        setEstimatedCost(selectedItem.estimatedCost || 0);
+
+        // Fetch recent details asynchronously to prefill if user hasn't explicitly set them
+        if (itemName) {
+          fetchRecentItemDetails(itemName).then(recent => {
+            if (recent && recent.found && !selectedItem.quantity) {
+              setQuantity(recent.quantity);
+              setUnit(recent.unit);
+              if (recent.categoryId) setCategoryId(recent.categoryId);
+              if (recent.estimatedCost) setEstimatedCost(recent.estimatedCost);
+            }
+          });
+        }
       }
 
       // Sync budget & audio note states
-      setEstimatedCost(selectedItem.estimatedCost || 0);
       setAudioNote(selectedItem.audioNote || "");
       setIsRecording(false);
       setRecordingSeconds(0);
     }
-  }, [selectedItem, favorites]);
+  }, [selectedItem, favorites, categories, fetchRecentItemDetails]);
 
   if (!selectedItem) return null;
 

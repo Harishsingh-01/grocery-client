@@ -6,11 +6,12 @@ import {
   Volume1, Volume2, Settings, Star
 } from "lucide-react";
 import { useApp } from "../hooks/AppContext";
-import { defaultCategories, getDefaultUnit, translateItemName, parseHinglishUnit } from "../lib/defaultData";
+import { defaultCategories, getDefaultUnit, translateItemName, parseHinglishUnit, autoDetectCategory } from "../lib/defaultData";
 import { Card } from "./ui/Card";
 import { Button } from "./ui/Button";
 import { BottomSheet } from "./ui/BottomSheet";
 import { FrequentTab } from "./FrequentTab";
+import { TemplatesTab } from "./TemplatesTab";
 import * as LucideIcons from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -268,11 +269,17 @@ export const SimpleShoppingDashboard = () => {
     const name = newCustomItemName[catId] || "";
     if (!name.trim()) return;
 
-    await toggleFavorite(name.trim(), catId);
+    let targetCatId = catId;
+    if (categories && categories.length > 0) {
+      const detected = autoDetectCategory(name, categories);
+      if (detected) targetCatId = detected;
+    }
+
+    await toggleFavorite(name.trim(), targetCatId);
 
     setSelectedItem({
       name: name.trim(),
-      categoryId: catId,
+      categoryId: targetCatId,
       subcategory: "",
       quantity: 1,
       unit: getDefaultUnit(name),
@@ -833,11 +840,34 @@ export const SimpleShoppingDashboard = () => {
 
         {activeView === "review" && (
           <div className="p-5 bg-slate-800/80 border border-slate-700 rounded-3xl flex flex-col gap-4 shadow-md">
-            <div className="flex items-center justify-between border-b border-slate-700 pb-2">
-              <h3 className="text-base font-black text-slate-100">
-                Selected List Review ({checkedItems.length})
-              </h3>
-              <div className="flex gap-3">
+            <div className="flex flex-col gap-3 border-b border-slate-700 pb-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-black text-slate-100">
+                  Selected List Review ({checkedItems.length})
+                </h3>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setActiveView("templates")}
+                    className="text-xs font-bold text-amber-400 hover:text-amber-500 transition-colors flex items-center gap-1 active:scale-95 cursor-pointer bg-transparent border-none"
+                  >
+                    <ListChecks className="h-3.5 w-3.5" />
+                    <span>Templates</span>
+                  </button>
+                  {checkedItems.length > 0 && (
+                    <button
+                      onClick={() => {
+                        const name = window.prompt("Enter a name for this template:");
+                        if (name) useApp().saveTemplate(name);
+                      }}
+                      className="text-xs font-bold text-blue-400 hover:text-blue-500 transition-colors flex items-center gap-1 active:scale-95 cursor-pointer bg-transparent border-none"
+                    >
+                      <Copy className="h-3.5 w-3.5" />
+                      <span>Save as Template</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-3 justify-end">
                 {checkedItems.length > 0 && (
                   <button
                     onClick={() => setShoppingMode(true)}
@@ -980,6 +1010,12 @@ export const SimpleShoppingDashboard = () => {
         {activeView === "frequent" && (
           <div className="flex flex-col gap-5">
             <FrequentTab />
+          </div>
+        )}
+
+        {activeView === "templates" && (
+          <div className="flex flex-col gap-5">
+            <TemplatesTab />
           </div>
         )}
 
