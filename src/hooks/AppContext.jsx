@@ -335,6 +335,8 @@ export const AppProvider = ({ children }) => {
           quantity: data.quantity,
           unit: data.unit,
           notes: data.notes || "",
+          estimatedCost: data.estimatedCost || 0,
+          audioNote: data.audioNote || "",
           forceAdd: data.forceAdd || false
         })
       });
