@@ -345,10 +345,10 @@ export const ItemEditorSheet = () => {
           <label className="text-sm font-extrabold text-slate-350 uppercase tracking-wider">
             Quantity
           </label>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 w-full max-w-[180px]">
             <button
               onClick={() => handleQuantityChange(quantity - 1)}
-              className="w-14 h-14 bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-2xl flex items-center justify-center font-black text-2xl text-slate-100 transition-colors cursor-pointer select-none active:scale-90"
+              className="w-12 h-12 bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-2xl flex items-center justify-center font-black text-xl text-slate-100 transition-colors cursor-pointer select-none active:scale-90 flex-shrink-0"
             >
               -
             </button>
@@ -356,12 +356,12 @@ export const ItemEditorSheet = () => {
               type="number"
               value={quantity === 0 ? "" : quantity}
               onChange={(e) => handleQuantityChange(parseFloat(e.target.value) || 0)}
-              className="flex-1 text-center font-black text-3xl py-2 bg-slate-900 text-slate-100 border border-slate-700 rounded-2xl focus:outline-none focus:border-emerald-500 min-h-[56px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="flex-1 text-center font-black text-2xl py-1 bg-slate-900 text-slate-100 border border-slate-700 rounded-2xl focus:outline-none focus:border-emerald-500 h-12 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none min-w-[50px]"
               placeholder="0"
             />
             <button
               onClick={() => handleQuantityChange(quantity + 1)}
-              className="w-14 h-14 bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-2xl flex items-center justify-center font-black text-2xl text-slate-100 transition-colors cursor-pointer select-none active:scale-90"
+              className="w-12 h-12 bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-2xl flex items-center justify-center font-black text-xl text-slate-100 transition-colors cursor-pointer select-none active:scale-90 flex-shrink-0"
             >
               +
             </button>

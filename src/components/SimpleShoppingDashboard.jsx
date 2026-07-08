@@ -49,6 +49,14 @@ export const SimpleShoppingDashboard = () => {
   const [newCustomItemName, setNewCustomItemName] = useState({});
   const [familyInputCode, setFamilyInputCode] = useState("");
   const [isResetting, setIsResetting] = useState(false);
+  const [hiddenCatalogItems, setHiddenCatalogItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gharlist_hidden_catalog_items");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   
   const triggerHaptic = () => {
     if (navigator.vibrate) {
@@ -290,6 +298,40 @@ export const SimpleShoppingDashboard = () => {
     setNewCustomItemName((prev) => ({ ...prev, [catId]: "" }));
   };
 
+  // Delete item from catalog
+  const handleDeleteCatalogItem = async (e, productName, categoryId) => {
+    e.stopPropagation();
+    
+    const translatedName = translateItemName(productName, itemLanguage);
+    const confirmDelete = window.confirm(
+      itemLanguage === "en"
+        ? `Are you sure you want to delete "${translatedName}" from the catalog?`
+        : itemLanguage === "hi"
+        ? `क्या आप वास्तव में कैटलॉग से "${translatedName}" को हटाना चाहते हैं?`
+        : `Kya aap sach me "${translatedName}" ko catalog se hatana chahte hain?`
+    );
+    if (!confirmDelete) return;
+
+    triggerHaptic();
+
+    // 1. If it's a favorite, toggle it off to delete from database favorites
+    const isFav = favorites.some(
+      (f) => f.name.toLowerCase().trim() === productName.toLowerCase().trim()
+    );
+    if (isFav) {
+      await toggleFavorite(productName, categoryId);
+    }
+
+    // 2. Add to hidden items list so it doesn't show in catalog view
+    const normalizedName = productName.toLowerCase().trim();
+    setHiddenCatalogItems((prev) => {
+      if (prev.includes(normalizedName)) return prev;
+      const next = [...prev, normalizedName];
+      localStorage.setItem("gharlist_hidden_catalog_items", JSON.stringify(next));
+      return next;
+    });
+  };
+
   // Share List to WhatsApp
   const handleShareWhatsApp = () => {
     if (checkedItems.length === 0) return;
@@ -414,7 +456,7 @@ export const SimpleShoppingDashboard = () => {
 
   // Hinglish & English Voice Input Parser
   const parseVoiceInput = (transcript) => {
-    const text = transcript.toLowerCase().trim();
+    let text = transcript.toLowerCase().trim();
     
     const numbersMap = {
       "ek": 1, "one": 1, "1": 1,
@@ -430,12 +472,62 @@ export const SimpleShoppingDashboard = () => {
       " आधा": 0.5, "half": 0.5, "0.5": 0.5
     };
 
-    const words = text.split(/\s+/);
+    // Category synonyms with common phonetic misspellings and transliterations
+    const categorySynonyms = {
+      "vegetables": ["vegetable", "vegetables", "vegitable", "vegitables", "vagetable", "vagetables", "veg", "sabzi", "sabji", "sabziya", "sabjiya", "सब्जी", "सब्जियां", "वेजिटेबल", "वेजिटेबल्स"],
+      "fruits": ["fruit", "fruits", "frut", "fruts", "phal", "phall", "फल", "फ्रूट", "फ्रूट्स"],
+      "dairy": ["dairy", "dairies", "milk", "doodh", "dudh", "डेयरी", "दूध", "मिल्क"],
+      "grocery": ["grocery", "groceries", "grosery", "ration", "rashan", "kirana", "किराना", "राशन", "ग्रोसरी"],
+      "spices": ["spice", "spices", "masala", "masale", "मसाले", "मसाला", "स्पाइस", "स्पाइसेस"],
+      "snacks": ["snack", "snacks", "namkeen", "biscuits", "स्नैक्स", "नमकीन"],
+      "beverages": ["beverage", "beverages", "drink", "drinks", "cold drink", "cold drinks", "tea", "coffee", "chai", "पानी", "चाय", "पेय", "कोल्ड ड्रिंक"],
+      "medicines": ["medicine", "medicines", "dawa", "dawai", "दवा", "दवाइयां", "मेडिसिन", "मेडिसिन्स"],
+      "cleaning": ["cleaning", "wash", "soap", "surf", "सफाई", "क्लीनिंग"]
+    };
+
+    let detectedCategoryId = null;
+    let matchedTerm = null;
+
+    // Search for category matching term
+    for (const cat of categories) {
+      const catNameLower = cat.name.toLowerCase().trim();
+      const synonyms = categorySynonyms[catNameLower] || [];
+      const searchTerms = [catNameLower, ...synonyms];
+
+      for (const term of searchTerms) {
+        if (text.includes(term)) {
+          detectedCategoryId = cat._id;
+          matchedTerm = term;
+          break;
+        }
+      }
+      if (detectedCategoryId) break;
+    }
+
+    // Strip the category word and surrounding prepositions if matched
+    if (matchedTerm) {
+      const prepositions = ["in", "under", "me", "mai", "mein", "pe", "par", "ko", "se", "में", "से", "को", "के", "अंदर", "के लिए", "for"];
+      
+      text = text.replace(matchedTerm, "");
+
+      for (const prep of prepositions) {
+        const prepRegex = new RegExp(`\\b${prep}\\b`, "g");
+        text = text.replace(prepRegex, "");
+        text = text.replace(prep, "");
+      }
+    }
+
+    const words = text.split(/\s+/).filter(Boolean);
     if (words.length === 0) return null;
 
     let parsedQty = 1;
     let parsedUnit = "";
     let nameWords = [];
+
+    // Common Hinglish/English helper words to skip/ignore from the item name
+    const skipWords = [
+      "le", "lo", "de", "do", "aur", "add", "kardo", "please", "kar"
+    ];
 
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
@@ -447,14 +539,18 @@ export const SimpleShoppingDashboard = () => {
       } else if (matchedUnit) {
         parsedUnit = matchedUnit;
       } else {
-        if (!["le", "lo", "de", "do", "aur", "add", "kardo", "please"].includes(word)) {
+        if (!skipWords.includes(word)) {
           nameWords.push(word);
         }
       }
     }
 
-    const itemName = nameWords.join(" ").trim();
+    let itemName = nameWords.join(" ").trim();
     if (!itemName) return null;
+
+    // Extra regex cleanup for hanging prepositions or action verbs
+    itemName = itemName.replace(/^(add|ko|in|me|mai|mein)\s+/i, "");
+    itemName = itemName.replace(/\s+(add|ko|in|me|mai|mein)$/i, "");
 
     const finalName = itemName.charAt(0).toUpperCase() + itemName.slice(1);
     const finalUnit = parsedUnit || getDefaultUnit(itemName);
@@ -462,7 +558,8 @@ export const SimpleShoppingDashboard = () => {
     return {
       name: finalName,
       quantity: parsedQty,
-      unit: finalUnit
+      unit: finalUnit,
+      categoryId: detectedCategoryId
     };
   };
 
@@ -476,7 +573,9 @@ export const SimpleShoppingDashboard = () => {
 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.lang = "hi-IN";
+    
+    // Set speech recognition language based on selected app/item language
+    recognition.lang = (itemLanguage === "hi" || itemLanguage === "hinglish") ? "hi-IN" : "en-US";
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -507,22 +606,53 @@ export const SimpleShoppingDashboard = () => {
     recognition.start();
   };
 
-  // Save spoken voice item directly into active shopping list
+  // Save spoken voice item directly into active shopping list and catalog
   const handleConfirmVoiceAdd = async () => {
     if (!voiceResult || !familyCode) return;
 
-    let matchedCatId = categories[0]?._id;
-    for (const cat of defaultCategories) {
-      const hasItem = cat.predefinedItems.some(i => i.name.toLowerCase() === voiceResult.name.toLowerCase());
-      if (hasItem) {
-        const activeCat = categories.find(c => c.name.toLowerCase() === cat.name.toLowerCase());
-        if (activeCat) {
-          matchedCatId = activeCat._id;
-          break;
+    let matchedCatId = voiceResult.categoryId;
+
+    if (!matchedCatId) {
+      // Find matching category from default predefined items
+      for (const cat of defaultCategories) {
+        const hasItem = cat.predefinedItems.some(i => i.name.toLowerCase() === voiceResult.name.toLowerCase());
+        if (hasItem) {
+          const activeCat = categories.find(c => c.name.toLowerCase() === cat.name.toLowerCase());
+          if (activeCat) {
+            matchedCatId = activeCat._id;
+            break;
+          }
         }
       }
     }
 
+    if (!matchedCatId) {
+      matchedCatId = categories[0]?._id;
+    }
+
+    // Check if the item is already in the catalog (predefined or favorite)
+    const activeCat = categories.find((c) => c._id === matchedCatId);
+    const defaultCat = defaultCategories.find(
+      (c) => c.name.toLowerCase() === (activeCat?.name || "").toLowerCase()
+    );
+    const isPredefined = defaultCat
+      ? defaultCat.predefinedItems.some(
+          (p) => p.name.toLowerCase().trim() === voiceResult.name.toLowerCase().trim()
+        )
+      : false;
+
+    const isFav = favorites.some(
+      (f) => f.name.toLowerCase().trim() === voiceResult.name.toLowerCase().trim()
+    );
+
+    const inCatalog = isPredefined || isFav;
+
+    // If it is not in the catalog, add it to Favorites (so it shows up in catalog)
+    if (!inCatalog) {
+      await toggleFavorite(voiceResult.name, matchedCatId);
+    }
+
+    // Add the item to the active shopping list (this ticks/checks it in the catalog)
     await addItem({
       categoryId: matchedCatId,
       subcategory: "",
@@ -679,7 +809,7 @@ export const SimpleShoppingDashboard = () => {
                     ...predefinedList.map((p) => p.name),
                     ...categoryFavorites.map((f) => f.name)
                   ])
-                );
+                ).filter(name => !hiddenCatalogItems.includes(name.toLowerCase().trim()));
 
                 const filteredItems = itemsToDisplay.filter((productName) => {
                   if (!searchQuery.trim()) return true;
@@ -730,26 +860,35 @@ export const SimpleShoppingDashboard = () => {
                                 const translatedName = translateItemName(productName, itemLanguage);
 
                                 return (
-                                  <button
-                                    key={productName}
-                                    onClick={() => handleProductToggle(productName, cat._id)}
-                                    className={`flex items-center justify-between p-3 rounded-2xl border text-left cursor-pointer active:scale-95 transition-all ${
-                                      isChecked
-                                        ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-400"
-                                        : "bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-750"
-                                    }`}
-                                  >
-                                    <span className="text-sm font-bold truncate max-w-[100px]" title={translatedName}>
-                                      {translatedName}
-                                    </span>
-                                    <div className={`h-6 w-6 rounded-lg border flex items-center justify-center transition-all ${
-                                      isChecked
-                                        ? "bg-emerald-500 border-emerald-500 text-white"
-                                        : "border-slate-700 bg-slate-800"
-                                    }`}>
-                                      {isChecked && <Check className="h-3.5 w-3.5 stroke-[3px]" />}
-                                    </div>
-                                  </button>
+                                  <div key={productName} className="relative w-full">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => handleDeleteCatalogItem(e, productName, cat._id)}
+                                      className="absolute -top-1.5 -left-1.5 z-10 p-1.5 bg-slate-950 hover:bg-red-950/40 border border-slate-800 hover:border-red-500/40 text-slate-450 hover:text-red-400 rounded-full cursor-pointer transition-all active:scale-75 flex items-center justify-center shadow-md min-w-[28px] min-h-[28px]"
+                                      title="Delete from catalog"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleProductToggle(productName, cat._id)}
+                                      className={`w-full flex items-center justify-between p-3 rounded-2xl border text-left cursor-pointer active:scale-95 transition-all ${
+                                        isChecked
+                                          ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-400"
+                                          : "bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-750"
+                                      }`}
+                                    >
+                                      <span className="text-sm font-bold truncate max-w-[100px]" title={translatedName}>
+                                        {translatedName}
+                                      </span>
+                                      <div className={`h-6 w-6 rounded-lg border flex items-center justify-center transition-all ${
+                                        isChecked
+                                          ? "bg-emerald-500 border-emerald-500 text-white"
+                                          : "border-slate-700 bg-slate-800"
+                                      }`}>
+                                        {isChecked && <Check className="h-3.5 w-3.5 stroke-[3px]" />}
+                                      </div>
+                                    </button>
+                                  </div>
                                 );
                               })}
                             </div>
@@ -1360,6 +1499,31 @@ export const SimpleShoppingDashboard = () => {
               <div className="w-4 h-4 bg-white rounded-full shadow-md" />
             </button>
           </div>
+
+          {/* Restore Deleted Catalog Items */}
+          {hiddenCatalogItems.length > 0 && (
+            <div className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-2xl">
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-bold text-slate-100">
+                  Deleted Catalog Items ({hiddenCatalogItems.length})
+                </span>
+                <span className="text-[10px] text-slate-400 font-semibold leading-tight">
+                  Restore hidden items back to the catalog list.
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  if (window.confirm("Restore all deleted items back to the catalog?")) {
+                    setHiddenCatalogItems([]);
+                    localStorage.removeItem("gharlist_hidden_catalog_items");
+                  }
+                }}
+                className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-xl text-xs cursor-pointer border-none transition-all active:scale-95"
+              >
+                Restore All
+              </button>
+            </div>
+          )}
 
           {/* Active Family Code Info */}
           <div className="bg-slate-900 p-4 border border-slate-800 rounded-2xl flex flex-col gap-2">

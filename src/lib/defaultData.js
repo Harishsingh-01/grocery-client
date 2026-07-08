@@ -332,3 +332,18 @@ export function autoDetectCategory(itemName, categoriesList) {
   // Default to null if no match, allowing fallback logic elsewhere
   return null;
 }
+
+// Resolves a spoken/translated name back to its canonical English dictionary key
+export function resolveCanonicalName(spokenName) {
+  if (!spokenName) return "";
+  const normalized = spokenName.trim().toLowerCase();
+  
+  for (const [englishKey, translations] of Object.entries(itemTranslations)) {
+    for (const val of Object.values(translations)) {
+      if (val.toLowerCase().trim() === normalized) {
+        return englishKey;
+      }
+    }
+  }
+  return spokenName;
+}
