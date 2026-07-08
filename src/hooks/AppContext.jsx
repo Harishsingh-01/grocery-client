@@ -207,11 +207,13 @@ export const AppProvider = ({ children }) => {
   // Silently sync polling logic every 5 seconds (updates state in-place without visual flashes)
   const fetchListsRef = useRef(fetchLists);
   const fetchItemsRef = useRef(fetchItems);
+  const fetchFavoritesRef = useRef(fetchFavorites);
 
   useEffect(() => {
     fetchListsRef.current = fetchLists;
     fetchItemsRef.current = fetchItems;
-  }, [fetchLists, fetchItems]);
+    fetchFavoritesRef.current = fetchFavorites;
+  }, [fetchLists, fetchItems, fetchFavorites]);
 
   useEffect(() => {
     if (!familyCode) return;
@@ -222,6 +224,7 @@ export const AppProvider = ({ children }) => {
         document.visibilityState === "visible"
       ) {
         fetchListsRef.current();
+        fetchFavoritesRef.current();
         if (activeListId) {
           fetchItemsRef.current(activeListId);
         }

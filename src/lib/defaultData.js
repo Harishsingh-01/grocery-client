@@ -19,7 +19,8 @@ export const defaultCategories = [
       { name: "Brinjal", defaultUnit: "kg", subcategory: "Seasonal" },
       { name: "Peas", defaultUnit: "kg", subcategory: "Seasonal" },
       { name: "Coriander", defaultUnit: "packet", subcategory: "Leafy Vegetables" },
-      { name: "Lemon", defaultUnit: "piece", subcategory: "Seasonal" }
+      { name: "Lemon", defaultUnit: "piece", subcategory: "Seasonal" },
+      { name: "Cucumber", defaultUnit: "kg", subcategory: "Seasonal" }
     ]
   },
   {
@@ -201,6 +202,7 @@ export const itemTranslations = {
   "Peas": { en: "Peas", hi: "मटर", hinglish: "Matar" },
   "Coriander": { en: "Coriander", hi: "धनिया", hinglish: "Dhaniya" },
   "Lemon": { en: "Lemon", hi: "नींबू", hinglish: "Nimboo" },
+  "Cucumber": { en: "Cucumber", hi: "खीरा", hinglish: "Kheera" },
   
   "Apple": { en: "Apple", hi: "सेब", hinglish: "Seb" },
   "Banana": { en: "Banana", hi: "केला", hinglish: "Kela" },
