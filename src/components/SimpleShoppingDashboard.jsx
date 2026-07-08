@@ -367,7 +367,11 @@ export const SimpleShoppingDashboard = () => {
     if (!activeListId) return;
     const link = `${window.location.origin}/share/${activeListId}`;
     navigator.clipboard.writeText(link);
-    alert("Public sharing link copied to clipboard!");
+    
+    // Auto open WhatsApp with the public link
+    const text = `GharList shared list: ${link}`;
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
   };
 
   // Complete List, Save to History and reset for a fresh new list
