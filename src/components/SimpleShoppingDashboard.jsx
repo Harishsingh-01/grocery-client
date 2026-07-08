@@ -283,7 +283,23 @@ export const SimpleShoppingDashboard = () => {
       if (detected) targetCatId = detected;
     }
 
-    await toggleFavorite(name.trim(), targetCatId);
+    // 1. Check if the item is already a favorite (so we don't toggle/delete it)
+    const isAlreadyFav = favorites.some(
+      (f) => f.name.toLowerCase().trim() === name.trim().toLowerCase()
+    );
+
+    if (!isAlreadyFav) {
+      await toggleFavorite(name.trim(), targetCatId);
+    }
+
+    // 2. Remove the item from hidden catalog items if it was previously hidden/deleted
+    const normalizedName = name.trim().toLowerCase();
+    setHiddenCatalogItems((prev) => {
+      if (!prev.includes(normalizedName)) return prev;
+      const next = prev.filter((item) => item !== normalizedName);
+      localStorage.setItem("gharlist_hidden_catalog_items", JSON.stringify(next));
+      return next;
+    });
 
     setSelectedItem({
       name: name.trim(),
@@ -651,6 +667,15 @@ export const SimpleShoppingDashboard = () => {
     if (!inCatalog) {
       await toggleFavorite(voiceResult.name, matchedCatId);
     }
+
+    // Remove the item from hidden catalog items if it was previously hidden/deleted
+    const normalizedName = voiceResult.name.trim().toLowerCase();
+    setHiddenCatalogItems((prev) => {
+      if (!prev.includes(normalizedName)) return prev;
+      const next = prev.filter((item) => item !== normalizedName);
+      localStorage.setItem("gharlist_hidden_catalog_items", JSON.stringify(next));
+      return next;
+    });
 
     // Add the item to the active shopping list (this ticks/checks it in the catalog)
     await addItem({
