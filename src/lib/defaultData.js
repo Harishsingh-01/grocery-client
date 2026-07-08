@@ -20,7 +20,17 @@ export const defaultCategories = [
       { name: "Peas", defaultUnit: "kg", subcategory: "Seasonal" },
       { name: "Coriander", defaultUnit: "packet", subcategory: "Leafy Vegetables" },
       { name: "Lemon", defaultUnit: "piece", subcategory: "Seasonal" },
-      { name: "Cucumber", defaultUnit: "kg", subcategory: "Seasonal" }
+      { name: "Cucumber", defaultUnit: "kg", subcategory: "Seasonal" },
+
+      { name: "Carrot", defaultUnit: "kg", subcategory: "Root Vegetables" },
+      { name: "Radish", defaultUnit: "kg", subcategory: "Root Vegetables" },
+      { name: "Bottle Gourd", defaultUnit: "piece", subcategory: "Seasonal" },
+      { name: "Bitter Gourd", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Pumpkin", defaultUnit: "piece", subcategory: "Seasonal" },
+      { name: "French Beans", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Fenugreek Leaves", defaultUnit: "packet", subcategory: "Leafy Vegetables" },
+      { name: "Mint Leaves", defaultUnit: "packet", subcategory: "Leafy Vegetables" },
+      { name: "Mushroom", defaultUnit: "packet", subcategory: "Seasonal" }
     ]
   },
   {
@@ -36,7 +46,24 @@ export const defaultCategories = [
       { name: "Papaya", defaultUnit: "piece", subcategory: "Tropical" },
       { name: "Grapes", defaultUnit: "kg", subcategory: "Berries" },
       { name: "Watermelon", defaultUnit: "piece", subcategory: "Seasonal" },
-      { name: "Pomegranate", defaultUnit: "kg", subcategory: "Tropical" }
+      { name: "Pomegranate", defaultUnit: "kg", subcategory: "Tropical" },
+
+      { name: "Guava", defaultUnit: "kg", subcategory: "Tropical" },
+      { name: "Pineapple", defaultUnit: "piece", subcategory: "Tropical" },
+      { name: "Sweet Lime", defaultUnit: "kg", subcategory: "Citrus" },
+      { name: "Mosambi", defaultUnit: "kg", subcategory: "Citrus" },
+      { name: "Litchi", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Pear", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Kiwi", defaultUnit: "piece", subcategory: "Seasonal" },
+      { name: "Coconut", defaultUnit: "piece", subcategory: "Tropical" },
+      { name: "Custard Apple", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Jamun", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Strawberry", defaultUnit: "packet", subcategory: "Berries" },
+      { name: "Muskmelon", defaultUnit: "piece", subcategory: "Seasonal" },
+      { name: "Dragon Fruit", defaultUnit: "piece", subcategory: "Seasonal" },
+      { name: "Plum", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Peach", defaultUnit: "kg", subcategory: "Seasonal" },
+      { name: "Chikoo", defaultUnit: "kg", subcategory: "Tropical" }
     ]
   },
   {
@@ -59,17 +86,83 @@ export const defaultCategories = [
     color: "bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400",
     subcategories: ["Flour", "Rice", "Pulses", "Cooking Oils", "Sweeteners"],
     predefinedItems: [
-      { name: "Flour", defaultUnit: "kg", subcategory: "Flour" },
+      // Flour
+      { name: "Flour (Atta)", defaultUnit: "kg", subcategory: "Flour" },
+      { name: "Maida", defaultUnit: "kg", subcategory: "Flour" },
+      { name: "Besan", defaultUnit: "kg", subcategory: "Flour" },
+      { name: "Suji", defaultUnit: "kg", subcategory: "Flour" },
+      { name: "Corn Flour", defaultUnit: "packet", subcategory: "Flour" },
+
+      // Rice
       { name: "Rice", defaultUnit: "kg", subcategory: "Rice" },
-      { name: "Dal", defaultUnit: "kg", subcategory: "Pulses" },
-      { name: "Sugar", defaultUnit: "kg", subcategory: "Sweeteners" },
-      { name: "Salt", defaultUnit: "packet", subcategory: "Sweeteners" },
-      { name: "Cooking Oil", defaultUnit: "litre", subcategory: "Cooking Oils" },
-      { name: "Tea", defaultUnit: "packet", subcategory: "Others" },
-      { name: "Coffee", defaultUnit: "bottle", subcategory: "Others" },
-      { name: "Besan", defaultUnit: "packet", subcategory: "Flour" },
+      { name: "Basmati Rice", defaultUnit: "kg", subcategory: "Rice" },
       { name: "Poha", defaultUnit: "packet", subcategory: "Rice" },
-      { name: "Suji", defaultUnit: "packet", subcategory: "Flour" }
+      { name: "Flattened Rice", defaultUnit: "packet", subcategory: "Rice" },
+
+      // Pulses
+      { name: "Toor Dal", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Moong Dal", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Masoor Dal", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Chana Dal", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Urad Dal", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Rajma", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Kabuli Chana", defaultUnit: "kg", subcategory: "Pulses" },
+      { name: "Kala Chana", defaultUnit: "kg", subcategory: "Pulses" },
+
+      // Sweeteners
+      { name: "Sugar", defaultUnit: "kg", subcategory: "Sweeteners" },
+      { name: "Jaggery", defaultUnit: "kg", subcategory: "Sweeteners" },
+      { name: "Brown Sugar", defaultUnit: "packet", subcategory: "Sweeteners" },
+      { name: "Rock Sugar (Mishri)", defaultUnit: "packet", subcategory: "Sweeteners" },
+
+      // Salt
+      { name: "Salt", defaultUnit: "packet", subcategory: "Salt" },
+      { name: "Rock Salt", defaultUnit: "packet", subcategory: "Salt" },
+      { name: "Black Salt", defaultUnit: "packet", subcategory: "Salt" },
+
+      // Cooking Oils
+      { name: "Cooking Oil", defaultUnit: "litre", subcategory: "Cooking Oils" },
+      { name: "Mustard Oil", defaultUnit: "litre", subcategory: "Cooking Oils" },
+      { name: "Sunflower Oil", defaultUnit: "litre", subcategory: "Cooking Oils" },
+      { name: "Groundnut Oil", defaultUnit: "litre", subcategory: "Cooking Oils" },
+      { name: "Soybean Oil", defaultUnit: "litre", subcategory: "Cooking Oils" },
+      { name: "Olive Oil", defaultUnit: "bottle", subcategory: "Cooking Oils" },
+      { name: "Ghee", defaultUnit: "kg", subcategory: "Cooking Oils" },
+
+      // Breakfast
+      { name: "Oats", defaultUnit: "packet", subcategory: "Breakfast" },
+      { name: "Cornflakes", defaultUnit: "box", subcategory: "Breakfast" },
+      { name: "Muesli", defaultUnit: "packet", subcategory: "Breakfast" },
+      { name: "Vermicelli", defaultUnit: "packet", subcategory: "Breakfast" },
+
+      // Tea & Coffee
+      { name: "Tea", defaultUnit: "packet", subcategory: "Tea & Coffee" },
+      { name: "Coffee", defaultUnit: "bottle", subcategory: "Tea & Coffee" },
+      { name: "Green Tea", defaultUnit: "box", subcategory: "Tea & Coffee" },
+
+      // Baking
+      { name: "Baking Soda", defaultUnit: "packet", subcategory: "Baking" },
+      { name: "Baking Powder", defaultUnit: "packet", subcategory: "Baking" },
+      { name: "Yeast", defaultUnit: "packet", subcategory: "Baking" },
+      { name: "Custard Powder", defaultUnit: "packet", subcategory: "Baking" },
+
+      // Dry Fruits
+      { name: "Almonds", defaultUnit: "kg", subcategory: "Dry Fruits" },
+      { name: "Cashews", defaultUnit: "kg", subcategory: "Dry Fruits" },
+      { name: "Raisins", defaultUnit: "kg", subcategory: "Dry Fruits" },
+      { name: "Pistachios", defaultUnit: "kg", subcategory: "Dry Fruits" },
+      { name: "Walnuts", defaultUnit: "kg", subcategory: "Dry Fruits" },
+      { name: "Dates", defaultUnit: "kg", subcategory: "Dry Fruits" },
+
+      // Others
+      { name: "Papad", defaultUnit: "packet", subcategory: "Others" },
+      { name: "Pickle", defaultUnit: "jar", subcategory: "Others" },
+      { name: "Honey", defaultUnit: "bottle", subcategory: "Others" },
+      { name: "Soya Chunks", defaultUnit: "packet", subcategory: "Others" },
+      { name: "Sabudana", defaultUnit: "packet", subcategory: "Others" },
+      { name: "Peanuts", defaultUnit: "kg", subcategory: "Others" },
+      { name: "Makhana", defaultUnit: "packet", subcategory: "Others" },
+      { name: "Vinegar", defaultUnit: "bottle", subcategory: "Others" }
     ]
   },
   {
@@ -81,9 +174,21 @@ export const defaultCategories = [
       { name: "Turmeric Powder", defaultUnit: "packet", subcategory: "Powdered Spices" },
       { name: "Red Chilli Powder", defaultUnit: "packet", subcategory: "Powdered Spices" },
       { name: "Coriander Powder", defaultUnit: "packet", subcategory: "Powdered Spices" },
-      { name: "Cumin Seeds", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Cumin Powder", defaultUnit: "packet", subcategory: "Powdered Spices" },
       { name: "Garam Masala", defaultUnit: "packet", subcategory: "Powdered Spices" },
-      { name: "Mustard Seeds", defaultUnit: "packet", subcategory: "Whole Spices" }
+      { name: "Kitchen King Masala", defaultUnit: "packet", subcategory: "Powdered Spices" },
+      { name: "Chaat Masala", defaultUnit: "packet", subcategory: "Powdered Spices" },
+
+      { name: "Cumin Seeds", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Mustard Seeds", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Coriander Seeds", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Black Pepper", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Cloves", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Green Cardamom", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Cinnamon", defaultUnit: "packet", subcategory: "Whole Spices" },
+      { name: "Bay Leaves", defaultUnit: "packet", subcategory: "Whole Spices" },
+
+      { name: "Kasuri Methi", defaultUnit: "packet", subcategory: "Herbs & Seasoning" },
     ]
   },
   {
@@ -93,11 +198,17 @@ export const defaultCategories = [
     subcategories: ["Detergents", "Household", "Personal Hygiene"],
     predefinedItems: [
       { name: "Detergent", defaultUnit: "kg", subcategory: "Detergents" },
-      { name: "Dishwash", defaultUnit: "piece", subcategory: "Household" },
+      { name: "Dishwash Liquid", defaultUnit: "bottle", subcategory: "Kitchen Cleaning" },
+      { name: "Dishwash Bar", defaultUnit: "piece", subcategory: "Kitchen Cleaning" },
       { name: "Floor Cleaner", defaultUnit: "bottle", subcategory: "Household" },
       { name: "Toilet Cleaner", defaultUnit: "bottle", subcategory: "Household" },
+      { name: "Glass Cleaner", defaultUnit: "bottle", subcategory: "Household" },
       { name: "Soap", defaultUnit: "piece", subcategory: "Personal Hygiene" },
-      { name: "Hand Wash", defaultUnit: "bottle", subcategory: "Personal Hygiene" }
+      { name: "Hand Wash", defaultUnit: "bottle", subcategory: "Personal Hygiene" },
+      { name: "Shampoo", defaultUnit: "bottle", subcategory: "Personal Hygiene" },
+      { name: "Toothpaste", defaultUnit: "piece", subcategory: "Personal Hygiene" },
+      { name: "Toothbrush", defaultUnit: "piece", subcategory: "Personal Hygiene" },
+      { name: "Tissue Paper", defaultUnit: "packet", subcategory: "Household" },
     ]
   },
   {
@@ -107,9 +218,15 @@ export const defaultCategories = [
     subcategories: ["Biscuits", "Chips & Namkeen", "Chocolates"],
     predefinedItems: [
       { name: "Biscuits", defaultUnit: "packet", subcategory: "Biscuits" },
+      { name: "Cookies", defaultUnit: "packet", subcategory: "Biscuits" },
       { name: "Chips", defaultUnit: "packet", subcategory: "Chips & Namkeen" },
       { name: "Namkeen", defaultUnit: "packet", subcategory: "Chips & Namkeen" },
-      { name: "Chocolates", defaultUnit: "piece", subcategory: "Chocolates" }
+      { name: "Popcorn", defaultUnit: "packet", subcategory: "Chips & Namkeen" },
+      { name: "Chocolates", defaultUnit: "piece", subcategory: "Chocolates" },
+      { name: "Candy", defaultUnit: "packet", subcategory: "Chocolates" },
+      { name: "Noodles", defaultUnit: "packet", subcategory: "Instant Food" },
+      { name: "Pasta", defaultUnit: "packet", subcategory: "Instant Food" },
+      { name: "Instant Soup", defaultUnit: "packet", subcategory: "Instant Food" },
     ]
   },
   {
@@ -129,10 +246,16 @@ export const defaultCategories = [
     color: "bg-indigo-100 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400",
     subcategories: ["Daily Supplements", "First Aid & Tablets"],
     predefinedItems: [
-      { name: "Multi-Vitamin", defaultUnit: "box", subcategory: "Daily Supplements" },
-      { name: "Paracetamol", defaultUnit: "packet", subcategory: "First Aid & Tablets" },
-      { name: "Cough Syrup", defaultUnit: "bottle", subcategory: "First Aid & Tablets" },
-      { name: "Band-aid", defaultUnit: "box", subcategory: "First Aid & Tablets" }
+      { name: "Paracetamol", defaultUnit: "strip", subcategory: "Medicines" },
+      { name: "Cough Syrup", defaultUnit: "bottle", subcategory: "Medicines" },
+      { name: "ORS", defaultUnit: "packet", subcategory: "Medicines" },
+      { name: "Antiseptic Liquid", defaultUnit: "bottle", subcategory: "First Aid" },
+      { name: "Band-Aid", defaultUnit: "box", subcategory: "First Aid" },
+      { name: "Cotton", defaultUnit: "packet", subcategory: "First Aid" },
+      { name: "Gauze", defaultUnit: "packet", subcategory: "First Aid" },
+      { name: "Pain Relief Spray", defaultUnit: "bottle", subcategory: "First Aid" },
+      { name: "Pain Relief Gel", defaultUnit: "tube", subcategory: "First Aid" },
+      { name: "Multivitamin", defaultUnit: "box", subcategory: "Supplements" },
     ]
   },
   {
@@ -143,7 +266,14 @@ export const defaultCategories = [
     predefinedItems: [
       { name: "Garbage Bags", defaultUnit: "packet", subcategory: "Household Utilities" },
       { name: "Matchbox", defaultUnit: "box", subcategory: "Household Utilities" },
-      { name: "Tissue Paper", defaultUnit: "packet", subcategory: "Household Utilities" }
+      { name: "Tissue Paper", defaultUnit: "packet", subcategory: "Household Utilities" },
+      { name: "Aluminium Foil", defaultUnit: "roll", subcategory: "Kitchen Essentials" },
+      { name: "Cling Wrap", defaultUnit: "roll", subcategory: "Kitchen Essentials" },
+      { name: "Paper Napkins", defaultUnit: "packet", subcategory: "Household Utilities" },
+      { name: "Candles", defaultUnit: "packet", subcategory: "Household Utilities" },
+      { name: "Mosquito Coil", defaultUnit: "box", subcategory: "Household Utilities" },
+      { name: "Mosquito Repellent", defaultUnit: "bottle", subcategory: "Household Utilities" },
+      { name: "Batteries", defaultUnit: "pair", subcategory: "Utilities" },
     ]
   }
 ];
@@ -203,7 +333,7 @@ export const itemTranslations = {
   "Coriander": { en: "Coriander", hi: "धनिया", hinglish: "Dhaniya" },
   "Lemon": { en: "Lemon", hi: "नींबू", hinglish: "Nimboo" },
   "Cucumber": { en: "Cucumber", hi: "खीरा", hinglish: "Kheera" },
-  
+
   "Apple": { en: "Apple", hi: "सेब", hinglish: "Seb" },
   "Banana": { en: "Banana", hi: "केला", hinglish: "Kela" },
   "Orange": { en: "Orange", hi: "संतरा", hinglish: "Santra" },
@@ -299,7 +429,7 @@ export function parseHinglishUnit(word) {
 // Auto-detect category based on item name and predefined keywords
 export function autoDetectCategory(itemName, categoriesList) {
   const normalized = itemName.toLowerCase().trim();
-  
+
   // 1. Check exact predefined items first
   for (const cat of defaultCategories) {
     for (const item of cat.predefinedItems) {
@@ -339,7 +469,7 @@ export function autoDetectCategory(itemName, categoriesList) {
 export function resolveCanonicalName(spokenName) {
   if (!spokenName) return "";
   const normalized = spokenName.trim().toLowerCase();
-  
+
   for (const [englishKey, translations] of Object.entries(itemTranslations)) {
     for (const val of Object.values(translations)) {
       if (val.toLowerCase().trim() === normalized) {
